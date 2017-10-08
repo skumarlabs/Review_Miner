@@ -1,5 +1,8 @@
 # Review_Miner
-A simple crawler to fetch review from play store
+A simple crawler to fetch review from play store. There are two scripts. Choose either of them.
+
+
+## For simple small 10-20 review corpus, choose below.
 
 This is a simple web crawler implemented in python to fetch user reviews from playstore for a given appid.
 
@@ -10,3 +13,9 @@ This is a simple web crawler implemented in python to fetch user reviews from pl
    $scrapy crawl review_miner -a appid=xxx.xxxx.xxx 
  
    where xxx.xxxx.xxx is the appid of your app. 
+   
+  ## For large review corpus, follow below.
+  
+  cd to /Review_Miner/Review_Miner/spiders/ and run playstore_reviews.py. See usage by
+  
+  $ python playstore_reviews.py --help
