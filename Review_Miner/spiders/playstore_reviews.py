@@ -1,5 +1,6 @@
 import argparse
 import json
+import sys
 
 import requests
 from bs4 import BeautifulSoup
@@ -37,6 +38,7 @@ def get_playstore_review_by_appid(appid, iter, sortOrder):
 
     '''
     page_num = 0
+    review_count = 0
     corpus = []
 
     for i in range(iter):
@@ -91,13 +93,15 @@ def get_playstore_review_by_appid(appid, iter, sortOrder):
                     review_rating = review_rating_tag['aria-label'].strip()
                     review = Review(author_name, review_rating, review_date, review_text)
                     corpus.append(review.__dict__)
+                    review_count += 1
 
             else:
                 break
         else:
             break
         page_num += 1
-        print('page number ' + str(page_num) + " done")
+        sys.stdout.write('\r Iterations Completed: %s' % str(page_num))
+    sys.stdout.write('\n No more reviews found! Total %s reviews added.' % str(review_count))
 
     return corpus
 
@@ -106,8 +110,7 @@ def main(args):
     appid = args.appid if args.appid else 'in.org.npci.upiapp'
     iters = args.iters if args.iters else 1
     order_by = args.order_by if args.order_by else 0
-
-    print(appid, iters, order_by)
+    # print(appid, iters, order_by)
     corpus = get_playstore_review_by_appid(appid, iters, order_by)
     filename = '%s-reviews.txt' % appid
     with open(filename, mode='w', encoding='utf-8') as f:
