@@ -10,15 +10,15 @@ This is a simple web crawler implemented in python to fetch user reviews from pl
 
 2)  To run the script execure below command from the root of the project:
    
-   $scrapy crawl review_miner -a appid=xxx.xxxx.xxx 
+    $scrapy crawl review_miner -a appid=xxx.xxxx.xxx 
  
-   where xxx.xxxx.xxx is the appid of your app. 
+    where xxx.xxxx.xxx is the appid of your app. 
    
-  ## For large review corpus, follow below.
+## For large review corpus, follow below.
   
 1)  cd to /Review_Miner/Review_Miner/spiders/ and run playstore_reviews.py. See usage by
   
-  $ python playstore_reviews.py --help
+    $python playstore_reviews.py --help
 
 2) Then, read the created text file having list of reviews using something like below:
     
