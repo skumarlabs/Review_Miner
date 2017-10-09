@@ -24,3 +24,5 @@ This is a simple web crawler implemented in python to fetch user reviews from pl
     
    with open('reviews.txt') as f:
         reviews_list = json.loads(f.read())  
+   
+Please use this script for educational purpose only.
