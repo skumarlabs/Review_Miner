@@ -16,6 +16,11 @@ This is a simple web crawler implemented in python to fetch user reviews from pl
    
   ## For large review corpus, follow below.
   
-  cd to /Review_Miner/Review_Miner/spiders/ and run playstore_reviews.py. See usage by
+1)  cd to /Review_Miner/Review_Miner/spiders/ and run playstore_reviews.py. See usage by
   
   $ python playstore_reviews.py --help
+
+2) Then, read the created text file having list of reviews using something like below:
+    
+   with open('reviews.txt') as f:
+        reviews_list = json.loads(f.read())  
