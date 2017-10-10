@@ -1,5 +1,4 @@
 import argparse
-import json
 import sys
 import time
 
@@ -64,12 +63,12 @@ def get_playstore_review_by_appid(appid, iter, sortOrder):
                    'Accept': '*/*'
                    }
         time.sleep(REQUEST_DELAY_TIME)
-        s = requests.Session()
+        # s = requests.Session()
         proxies = {
             'http': 'socks5://127.0.0.1:9050',
             'https': 'socks5://127.0.0.1:9050'
         }
-        r = s.post("https://play.google.com/store/getreviews?authuser=0", headers=headers, proxies=proxies,
+        r = requests.post("https://play.google.com/store/getreviews?authuser=0", headers=headers, proxies=proxies,
                    data=payload)
 
         if r.status_code == 200:
@@ -97,11 +96,12 @@ def get_playstore_review_by_appid(appid, iter, sortOrder):
                         review_date = review_date_tag.get_text().strip()
 
                         review_text = review_text_tag.get_text().strip()
+                        review_text = ' '.join(review_text.split())
                         # review_text = removeUnicode(review_text)
                         # review_text =  re.sub('\\\\u[\w]{4}', '', review_text, re.UNICODE)
                         review_rating = review_rating_tag['aria-label'].strip()
-                        review = Review(author_name, review_rating, review_date, review_text)
-                        corpus.append(review.__dict__)
+                        review = Review(appid, author_name, review_rating, review_date, review_text)
+                        corpus.append(str(review))
                         review_count += 1
 
                 else:  # html has some content
@@ -128,14 +128,15 @@ def main(args):
         sys.exit(APP_ID_NOT_GIVEN)
 
     appid = args.appid if args.appid else sys.stdout.write('app id not given! exiting..\n')
-    iters = args.iters if args.iters else 1
+    iters = args.iters if args.iters else 1000
     order_by = args.order_by if args.order_by else 0
     REQUEST_DELAY_TIME = args.request_delay_time if args.request_delay_time else 0
 
     corpus = get_playstore_review_by_appid(appid, iters, order_by)
     filename = '%s-reviews.txt' % appid.replace('.', '_')
     with open(filename, mode='w', encoding='utf-8') as f:
-        json.dump(corpus, f)
+        # json.dump(corpus, f)
+        f.write('\n'.join(corpus))
 
 
 if __name__ == "__main__":
@@ -145,10 +146,10 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Get playstore reviews for an app')
     parser.add_argument('--appid', action='store', dest='appid', type=str, help='app id (mandatory)')
     parser.add_argument('--iters', action='store', dest='iters', type=int,
-                        help='An integer specifying number of iterations to fetch reviews. Default 5')
+                        help='An integer specifying number of iterations to fetch reviews. Default: All')
     parser.add_argument('--orderby', action='store', dest='order_by', type=int,
                         help='Fetch reviews ordered by: 0 for Newest, 1 for Rating, 2 for Helpfulness. Default 0')
-    parser.add_argument('-r', action='store', dest='request_delay_time', type=float,
+    parser.add_argument('-d', action='store', dest='request_delay_time', type=float,
                         help='Delay in seconds before making new network page request')
     args = parser.parse_args()
     main(args)
