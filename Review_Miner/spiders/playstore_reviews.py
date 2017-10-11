@@ -1,31 +1,11 @@
 import argparse
 import sys
 import time
+import re
 
 import requests
 from bs4 import BeautifulSoup
 from review import Review
-
-
-def unescapematch(matchobj):
-    ''' To unescape a unicode value to a unicode character.
-        Pass this function to repl parameter of re.sub()  '''
-    escapesequence = matchobj.group(0)
-    digits = escapesequence[2:]
-    ordinal = int(escapesequence, 16)
-    char = chr(ordinal)
-    return char
-
-
-def removeUnicode(text):
-    ''' To unescape a text into its ascii value.
-         '''
-    if (isinstance(text, str)):
-        return text.decode('utf-8').encode("ascii", "ignore")
-    else:
-        return text.encode("ascii", "ignore")
-
-    return text
 
 
 def get_playstore_review_by_appid(appid, iter, sortOrder):
@@ -97,8 +77,8 @@ def get_playstore_review_by_appid(appid, iter, sortOrder):
 
                         review_text = review_text_tag.get_text().strip()
                         review_text = ' '.join(review_text.split())
-                        # review_text = removeUnicode(review_text)
-                        # review_text =  re.sub('\\\\u[\w]{4}', '', review_text, re.UNICODE)
+                        
+                        #review_text =  re.sub(r'[^\x00-\x7F]+', r'', review_text)  # use it to convert into all ascii code
                         review_rating = review_rating_tag['aria-label'].strip()
                         review = Review(appid, author_name, review_rating, review_date, review_text)
                         corpus.append(str(review))
